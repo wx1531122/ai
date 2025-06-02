@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ global_content.page_title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;4
+00;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #FDFCF9;
+            color: #383838;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #4A6C6F;
+            border-bottom-color: #4A6C6F;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #EAE8E1;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0
+ 0 0 / 0.07);
+        }
+        .tab-button {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab-button.active {
+            background-color: #4A6C6F;
+            color: #FFFFFF;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 100%;
+            max-width: 500px;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 45vh;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 sh
+adow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#hero" class="text-xl font-bold text-[#4A6C6F]">AI
+融入日常</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">{% for link in nav_links %}
+                        <a href="{{ link.href }}" class="nav-link px-3 py-2 rounded-md text-sm font-medium">{{ link.text }}</a>
+                        {% endfor %}</div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-cen
+ter justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-7
+00 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+ stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">{% for link in nav_links %}
+                <a href="{{ link.href }}" class="block nav-link px-3 py-2 rounded-md text-base font-medium">{{ link.text }}</a>
+                {% endfor %}</div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight leading
+-tight mb-4">
+                    <span class="text-[#4A6C6F]">{{ hero.title_part1 }}</span> {{ hero.title_part2 }}
+                </h1>
+                <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-60
+0">
+                    {{ hero.subtitle }}
+                </p>
+                <div class="mt-10 flex justify-center gap-4">
+                    <a href="#insights" class="bg-[#4A6C6F] text-white font-bold
+ py-3 px-8 rounded-full hover:bg-[#3E5A5D] transition-colors">
+                        {{ hero.button1_text }}
+                    </a>
+                    <a href="#assistants" class="bg-gray-200 text-gray-800 font-
+bold py-3 px-8 rounded-full hover:bg-gray-300 transition-colors">
+                        {{ hero.button2_text }}
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="assistants" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+{{ assistants_section.title }}</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{{ assistants_section.subtitle }}</p>
+                </div>
+
+                <div id="assistants-tabs" class="w-full">
+                    <div class="mb-8 flex justify-center border-b border-gray-20
+0">
+                        <button data-tab="chatbots" class="tab-button active text-gray-700 py-3 px-6 block font-medium text-center focus:outline-none">
+                            {{ assistants_section.tab1_title }}
+                        </button>
+                        <button data-tab="voice-assistants" class="tab-button text-gray-700 py-3 px-6 block font-medium text-center focus:outline-none">
+                            {{ assistants_section.tab2_title }}
+                        </button>
+                    </div>
+
+                    <div id="chatbots" class="tab-content">
+                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-col
+s-3 gap-8">
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="font-bold text-xl mb-2">ChatGPT (Open
+AI)</h3>
+                                <p class="text-gray-600 mb-4">功能强大的研究、问题解决和写作工
+具。普通用户用它进行创意写作、学习和编程辅助。</p>
+                                <span class="text-xs font-semibold inline-block
+py-1 px-2 uppercase rounded-full text-green-600 bg-green-200">优点: 深度研究</span>
+                            </div>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="font-bold text-xl mb-2">Google Gemini
+</h3>
+                                <p class="text-gray-600 mb-4">与Google Workspace
+深度集成，擅长复杂推理和文件处理，可简化邮件、日程管理等任务。</p>
+                                <span class="text-xs font-semibold inline-block
+py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">优点: 生态集成</span>
+                            </div>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="font-bold text-xl mb-2">Microsoft Cop
+ilot</h3>
+                                <p class="text-gray-600 mb-4">结合Bing搜索提供最新信息，与Mi
+crosoft 365无缝结合，辅助文档、表格和演示稿创作。</p>
+                                <span class="text-xs font-semibold inline-block
+py-1 px-2 uppercase rounded-full text-red-600 bg-red-200">优点: 实时信息</span>
+                            </div>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="font-bold text-xl mb-2">Meta AI</h3>
+                                <p class="text-gray-600 mb-4">集成于主流社交应用，扮演个人助理
+、旅行规划和内容生成器等多种角色。</p>
+                                <span class="text-xs font-semibold inline-block
+py-1 px-2 uppercase rounded-full text-indigo-600 bg-indigo-200">优点: 社交便利</span>
+                            </div>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="font-bold text-xl mb-2">Claude (Anthr
+opic)</h3>
+                                <p class="text-gray-600 mb-4">在编码任务和基于上下文的协作方面
+表现突出，注重模型的可靠性与安全性。</p>
+                                <span class="text-xs font-semibold inline-block
+py-1 px-2 uppercase rounded-full text-purple-600 bg-purple-200">优点: 编码强大</span>
+                            </div>
+                            <div class="card p-6 rounded-lg">
+                                <h3 class="font-bold text-xl mb-2">Perplexity AI
+</h3>
+                                <p class="text-gray-600 mb-4">AI驱动的搜索引擎，提供带引用来
+源的实时答案，尤其适合深度研究和信息核查。</p>
+                                <span class="text-xs font-semibold inline-block
+py-1 px-2 uppercase rounded-full text-yellow-600 bg-yellow-200">优点: 精准溯源</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="voice-assistants" class="tab-content hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-c
+enter">{% for feature in voice_assistant_features %}
+                            <div class="card p-6 rounded-lg">
+                                <div class="text-4xl mb-4 text-[#D4AF37]">{{ feature.icon }}</div>
+                                <h3 class="font-bold text-xl mb-2">{{ feature.title }}</h3>
+                                <p class="text-gray-600">{{ feature.description }}</p>
+                            </div>
+                            {% endfor %}
+                            <div class="card p-6 rounded-lg">
+                                <div class="text-4xl mb-4 text-[#D4AF37]">🗣️</di
+v>
+                                <h3 class="font-bold text-xl mb-2">日常任务</h3>
+                                <p class="text-gray-600">查询天气、播放音乐、设置闹钟、发送消息。全
+球20.5%的人使用语音搜索。</p>
+                            </div>
+                            <div class="card p-6 rounded-lg">
+                                <div class="text-4xl mb-4 text-[#D4AF37]">🏠</div
+>
+                                <h3 class="font-bold text-xl mb-2">智能家居控制</h3>
+                                <p class="text-gray-600">控制灯光、恒温器等智能设备，是语音助手普及
+的主要驱动力。</p>
+                            </div>
+                            <div class="card p-6 rounded-lg">
+                                <div class="text-4xl mb-4 text-[#D4AF37]">🛒</div
+>
+                                <h3 class="font-bold text-xl mb-2">购物与导航</h3>
+                                <p class="text-gray-600">查找路线、进行预订、购买日常用品。76%的
+语音搜索是“我附近的”查询。</p>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="creativity" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">{{ creativity_section.title }}</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{{ creativity_section.subtitle }}</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
+">{% for card in creativity_cards %}
+                    <div class="card p-6 rounded-lg">
+                         <div class="flex justify-between items-start">
+                             <h3 class="font-bold text-xl mb-2">{{ card.title }}</h3>
+                             <span class="text-2xl">{{ card.icon_emoji }}</span>
+                         </div>
+                        <p class="text-gray-600 mb-4">{{ card.description }}</p>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                             <p class="text-sm text-red-600"><span class="font-bold">伦理警示:</span> {{ card.ethical_warning }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}</div>
+            </div>
+        </section>
+
+        <section id="lifestyle" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">{{ lifestyle_section.title }}</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{{ lifestyle_section.subtitle }}</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8
+">{% for card in lifestyle_cards %}
+                    <div class="card p-6 rounded-lg text-center">
+                        <div class="text-4xl mb-4">{{ card.icon_emoji }}</div>
+                        <h4 class="font-semibold text-lg">{{ card.title }}</h4>
+                        <p class="text-sm text-gray-500 mt-2">{{ card.description }}</p>
+                    </div>
+                    {% endfor %}</div>
+            </div>
+        </section>
+
+        <section id="insights" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+{{ insights_section.title }}</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{{ insights_section.subtitle }}</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+>
+                    <div>
+                        <h3 class="font-bold text-2xl mb-4 text-center">{{ insights_section.chart1_title }}</h3>
+                        <div class="chart-container">
+                            <canvas id="adoptionRateChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-2xl mb-4 text-center">{{ insights_section.chart2_title }}</h3>
+                         <div class="chart-container">
+                            <canvas id="demographicsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenges" class="py-16 md:py-24">
+             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+{{ challenges_section.title }}</h2>
+                    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">{{ challenges_section.subtitle }}</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="font-bold text-2xl mb-6">{{ challenges_section.accordion_section_title }}</h3>
+                        <div id="accordion" class="space-y-4">{% for item in challenge_items %}
+                            <div class="accordion-item">
+                                <button class="accordion-header w-full text-left flex justify-between items-center p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                                    <span class="font-medium">{{ item.title | safe }}</span>
+                                    <span class="accordion-icon transform rotate-0 transition-transform">▼</span>
+                                </button>
+                                <div class="accordion-content hidden p-4 bg-gray-50 rounded-b-lg">
+                                    <p class="text-gray-600">{{ item.content }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}{% for item in challenge_items %}
+                            <div class="accordion-item">
+                                <button class="accordion-header w-full text-left flex justify-between items-center p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                                    <span class="font-medium">{{ item.title | safe }}</span>
+                                    <span class="accordion-icon transform rotate-0 transition-transform">▼</span>
+                                </button>
+                                <div class="accordion-content hidden p-4 bg-gray-50 rounded-b-lg">
+                                    <p class="text-gray-600">{{ item.content }}</p>
+
+                            </div>
+                            {% endfor %}</div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header w-full text-left
+ flex justify-between items-center p-4 bg-white rounded-lg shadow-sm border bord
+er-gray-200">
+                                    <span class="font-medium">⚖️ 偏见与公平性</span>
+                                     <span class="accordion-icon transform rotat
+e-0 transition-transform">▼</span>
+                                </button>
+                                <div class="accordion-content hidden p-4 bg-gray
+-50 rounded-b-lg">
+                                    <p class="text-gray-600">训练数据中存在的偏见可能被AI模型
+复制甚至放大，导致在招聘、信贷等领域出现歧视性结果。</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header w-full text-left
+ flex justify-between items-center p-4 bg-white rounded-lg shadow-sm border bord
+er-gray-200">
+                                    <span class="font-medium">📰 虚假信息与深度伪造</span>
+                                    <span class="accordion-icon transform rotate
+-0 transition-transform">▼</span>
+                                </button>
+                                <div class="accordion-content hidden p-4 bg-gray
+-50 rounded-b-lg">
+                                    <p class="text-gray-600">AI降低了制造逼真虚假信息（文本、
+图像、音视频）的门槛，对社会信任和民主进程构成威胁。</p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header w-full text-left
+ flex justify-between items-center p-4 bg-white rounded-lg shadow-sm border bord
+er-gray-200">
+                                    <span class="font-medium">🧠 过度依赖与批判性思维</span
+>
+                                     <span class="accordion-icon transform rotat
+e-0 transition-transform">▼</span>
+                                </button>
+                                <div class="accordion-content hidden p-4 bg-gray
+-50 rounded-b-lg">
+                                    <p class="text-gray-600">长期依赖AI完成思考和决策任务，可
+能削弱用户的独立思考、问题解决和批判性评估能力。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="font-bold text-2xl mb-6">{{ challenges_section.future_trends_section_title }}</h3>
+                        <ul class="space-y-4">{% for trend in future_trends %}
+                            <li class="card p-4 flex items-center space-x-4 rounded-lg">
+                                <span class="text-2xl">{{ trend.icon_emoji }}</span>
+                                <div>
+                                    <h4 class="font-semibold">{{ trend.title }}</h4>
+                                    <p class="text-sm text-gray-600">{{ trend.description }}</p>
+                                </div>
+                            </li>
+                            {% endfor %}
+                            <li class="card p-4 flex items-center space-x-4 roun
+ded-lg">
+                                <span class="text-2xl">🤖</span>
+                                <div>
+                                    <h4 class="font-semibold">代理式AI (Agentic AI)
+</h4>
+                                    <p class="text-sm text-gray-600">AI将从执行指令的
+工具演变为能自主规划并执行多步骤复杂任务的智能代理。</p>
+                                </div>
+                            </li>
+                            <li class="card p-4 flex items-center space-x-4 roun
+ded-lg">
+                                 <span class="text-2xl">🧩</span>
+                                <div>
+                                    <h4 class="font-semibold">多模态AI深化应用</h4>
+                                    <p class="text-sm text-gray-600">AI将更擅长同时理
+解和生成文本、图像、音频、视频等多种信息，交互更自然。</p>
+                                </div>
+                            </li>
+                             <li class="card p-4 flex items-center space-x-4 rou
+nded-lg">
+                                 <span class="text-2xl">🔬</span>
+                                <div>
+                                    <h4 class="font-semibold">科学与机器人领域拓展</h4>
+                                    <p class="text-sm text-gray-600">AI将在科学发现和
+机器人技术中发挥更大作用，并逐渐渗透到消费级产品。</p>
+                                </div>
+                            </li>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text
+-gray-500">
+            <p>{{ global_content.footer_copyright_text | safe }}</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button
+');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const tabs = document.getElementById('assistants-tabs');
+            if (tabs) {
+                const tabButtons = tabs.querySelectorAll('.tab-button');
+                const tabContents = tabs.querySelectorAll('.tab-content');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        tabButtons.forEach(btn => btn.classList.remove('active')
+);
+                        button.classList.add('active');
+
+                        const tabId = button.getAttribute('data-tab');
+                        tabContents.forEach(content => {
+                            if (content.id === tabId) {
+                                content.classList.remove('hidden');
+                            } else {
+                                content.classList.add('hidden');
+                            }
+                        });
+                    });
+                });
+            }
+
+            const accordion = document.getElementById('accordion');
+            if(accordion) {
+                const accordionItems = accordion.querySelectorAll('.accordion-it
+em');
+                accordionItems.forEach(item => {
+                    const header = item.querySelector('.accordion-header');
+                    header.addEventListener('click', () => {
+                        const content = item.querySelector('.accordion-content')
+;
+                        const icon = item.querySelector('.accordion-icon');
+
+                        const isVisible = !content.classList.contains('hidden');
+
+                        accordion.querySelectorAll('.accordion-content').forEach
+(c => c.classList.add('hidden'));
+                        accordion.querySelectorAll('.accordion-icon').forEach(i
+=> i.style.transform = 'rotate(0deg)');
+
+                        if (!isVisible) {
+                            content.classList.remove('hidden');
+                            icon.style.transform = 'rotate(180deg)';
+                        }
+                    });
+                });
+            }
+
+            const ctxAdoption = document.getElementById('adoptionRateChart');
+            if (ctxAdoption) {
+                new Chart(ctxAdoption, {
+                    type: 'bar',
+                    data: {labels: {{ adoption_chart.labels_json | safe }},
+                        datasets: [\{
+                            label: '{{ adoption_chart.dataset_label }}',
+                            data: {{ adoption_chart.data_json | safe }},
+                            backgroundColor: ['#60A5FA', '#FBBF24', '#34D399', '#F87171'],
+                            borderColor: ['#3B82F6', '#F59E0B', '#10B981', '#EF4444'],
+                            borderWidth: 1
+                        }],
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                             tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + co
+ntext.parsed.y + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const ctxDemographics = document.getElementById('demographicsChart')
+;
+            if (ctxDemographics) {
+                new Chart(ctxDemographics, {
+                    type: 'doughnut',
+                    data: {labels: {{ demographics_chart.labels_json | safe }},
+                        datasets: [\{
+                            label: '{{ demographics_chart.dataset_label }}',
+                            data: {{ demographics_chart.data_json | safe }},
+                            backgroundColor: [
+                                'rgba(74, 108, 111, 0.7)',
+                                'rgba(212, 175, 55, 0.7)',
+                            ],
+                            borderColor: [
+                                'rgba(74, 108, 111, 1)',
+                                'rgba(212, 175, 55, 1)',
+                            ],
+                            borderWidth: 1
+                        }],
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.pa
+rsed + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const header = document.getElementById('header');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            function onScroll() {
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - header.offsetHeight - 20) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === currentSectio
+n) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', onScroll);
+            onScroll();
+        });
+    </script>
+</body>
+</html>
