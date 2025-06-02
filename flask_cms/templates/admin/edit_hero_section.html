@@ -1,0 +1,56 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+<h1 class="text-2xl font-bold mb-6">{{ title }}</h1>
+<form method="POST" action="{{ url_for('admin_bp.edit_hero_section') }}" class="space-y-6 bg-white p-6 rounded-lg shadow">
+    {{ form.hidden_tag() }}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label for="{{ form.title_part1.id }}" class="block text-sm font-medium text-gray-700">{{ form.title_part1.label.text }}</label>
+            {{ form.title_part1(class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" + (" border-red-500" if form.title_part1.errors else "")) }}
+            {% if form.title_part1.errors %}<ul class="text-red-500 text-xs mt-1">{% for e in form.title_part1.errors %}<li>{{e}}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.title_part2.id }}" class="block text-sm font-medium text-gray-700">{{ form.title_part2.label.text }}</label>
+            {{ form.title_part2(class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" + (" border-red-500" if form.title_part2.errors else "")) }}
+            {% if form.title_part2.errors %}<ul class="text-red-500 text-xs mt-1">{% for e in form.title_part2.errors %}<li>{{e}}</li>{% endfor %}</ul>{% endif %}
+        </div>
+    </div>
+
+    <div>
+        <label for="{{ form.subtitle.id }}" class="block text-sm font-medium text-gray-700">{{ form.subtitle.label.text }}</label>
+        {{ form.subtitle(rows=4, class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" + (" border-red-500" if form.subtitle.errors else "")) }}
+        {% if form.subtitle.errors %}<ul class="text-red-500 text-xs mt-1">{% for e in form.subtitle.errors %}<li>{{e}}</li>{% endfor %}</ul>{% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label for="{{ form.button1_text.id }}" class="block text-sm font-medium text-gray-700">{{ form.button1_text.label.text }}</label>
+            {{ form.button1_text(class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" + (" border-red-500" if form.button1_text.errors else "")) }}
+            {% if form.button1_text.errors %}<ul class="text-red-500 text-xs mt-1">{% for e in form.button1_text.errors %}<li>{{e}}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.button1_link.id }}" class="block text-sm font-medium text-gray-700">{{ form.button1_link.label.text }}</label>
+            {{ form.button1_link(class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" + (" border-red-500" if form.button1_link.errors else "")) }}
+            {% if form.button1_link.errors %}<ul class="text-red-500 text-xs mt-1">{% for e in form.button1_link.errors %}<li>{{e}}</li>{% endfor %}</ul>{% endif %}
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label for="{{ form.button2_text.id }}" class="block text-sm font-medium text-gray-700">{{ form.button2_text.label.text }}</label>
+            {{ form.button2_text(class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" + (" border-red-500" if form.button2_text.errors else "")) }}
+            {% if form.button2_text.errors %}<ul class="text-red-500 text-xs mt-1">{% for e in form.button2_text.errors %}<li>{{e}}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div>
+            <label for="{{ form.button2_link.id }}" class="block text-sm font-medium text-gray-700">{{ form.button2_link.label.text }}</label>
+            {{ form.button2_link(class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" + (" border-red-500" if form.button2_link.errors else "")) }}
+            {% if form.button2_link.errors %}<ul class="text-red-500 text-xs mt-1">{% for e in form.button2_link.errors %}<li>{{e}}</li>{% endfor %}</ul>{% endif %}
+        </div>
+    </div>
+
+    <div>
+        {{ form.submit(class="w-auto justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500") }}
+    </div>
+</form>
+{% endblock %}

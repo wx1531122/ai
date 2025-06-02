@@ -1,0 +1,53 @@
+{% extends "admin/admin_base.html" %}
+{% block admin_content %}
+<h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
+<p class="mb-6">Welcome, {{ current_user.id }}! Select a section below to manage its content.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Single Instance Content Sections -->
+    <div class="p-4 bg-gray-50 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-3 text-gray-700">General Site Content</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('admin_bp.edit_global_content') }}" class="text-indigo-600 hover:text-indigo-800">Edit Global Content (Title, Footer)</a></li>
+            <li><a href="{{ url_for('admin_bp.edit_hero_section') }}" class="text-indigo-600 hover:text-indigo-800">Edit Hero Section</a></li>
+        </ul>
+    </div>
+
+    <div class="p-4 bg-gray-50 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-3 text-gray-700">Main Section Headers</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('admin_bp.edit_assistants_section_content') }}" class="text-indigo-600 hover:text-indigo-800">Edit "AI Assistants" Section Texts</a></li>
+            <li><a href="{{ url_for('admin_bp.edit_creativity_section_content') }}" class="text-indigo-600 hover:text-indigo-800">Edit "AI Creativity" Section Texts</a></li>
+            <li><a href="{{ url_for('admin_bp.edit_lifestyle_section_content') }}" class="text-indigo-600 hover:text-indigo-800">Edit "AI Lifestyle" Section Texts</a></li>
+            <li><a href="{{ url_for('admin_bp.edit_insights_section_content') }}" class="text-indigo-600 hover:text-indigo-800">Edit "Data Insights" Section Texts</a></li>
+            <li><a href="{{ url_for('admin_bp.edit_challenges_section_content') }}" class="text-indigo-600 hover:text-indigo-800">Edit "Challenges & Future" Section Texts</a></li>
+        </ul>
+    </div>
+
+    <!-- Collections / Multiple Items -->
+    <div class="p-4 bg-gray-50 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-3 text-gray-700">Manage Collections</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('admin_bp.manage_nav_links') }}" class="text-indigo-600 hover:text-indigo-800">Manage Navigation Links</a></li>
+            <li><a href="{{ url_for('admin_bp.manage_assistant_cards') }}" class="text-indigo-600 hover:text-indigo-800">Manage "AI Assistant" Chatbot Cards</a></li>
+            <li><a href="{{ url_for('admin_bp.manage_voice_features') }}" class="text-indigo-600 hover:text-indigo-800">Manage "Voice Assistant" Features</a></li>
+            <li><a href="{{ url_for('admin_bp.manage_creativity_cards') }}" class="text-indigo-600 hover:text-indigo-800">Manage "AI Creativity" Cards</a></li>
+            <li><a href="{{ url_for('admin_bp.manage_lifestyle_cards') }}" class="text-indigo-600 hover:text-indigo-800">Manage "AI Lifestyle" Cards</a></li>
+            <li><a href="{{ url_for('admin_bp.manage_challenge_items') }}" class="text-indigo-600 hover:text-indigo-800">Manage "Challenge" Accordion Items</a></li>
+            <li><a href="{{ url_for('admin_bp.manage_future_trends') }}" class="text-indigo-600 hover:text-indigo-800">Manage "Future Trend" Items</a></li>
+        </ul>
+    </div>
+
+    <div class="p-4 bg-gray-50 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-3 text-gray-700">Chart Data</h2>
+        <ul class="space-y-2">
+            <li><a href="#" class="text-indigo-600 hover:text-indigo-800">Edit "Adoption Rate" Chart Data</a></li>
+            <li><a href="#" class="text-indigo-600 hover:text-indigo-800">Edit "Demographics" Chart Data</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+    <p><strong class="font-bold">Note:</strong> The edit links above are placeholders. Routes and forms for these sections will be implemented in subsequent steps.</p>
+</div>
+{% endblock %}

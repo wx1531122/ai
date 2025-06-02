@@ -1,0 +1,10 @@
+{% extends "admin/admin_base.html" %}
+{% block admin_content %}
+<div class="flex justify-between items-center mb-6"><h1 class="text-2xl font-bold">{{ title }}</h1><a href="{{ url_for('admin_bp.add_challenge_item') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add New Item</a></div>
+<table class="min-w-full table-auto bg-white shadow-md rounded">
+<thead class="bg-gray-200"><tr><th class="th">Order</th><th class="th">Title Snippet</th><th class="th">Content (Excerpt)</th><th class="th">Actions</th></tr></thead>
+<tbody>
+{% for item in items %}<tr><td class="td">{{ item.order }}</td><td class="td">{{ item.title[:50] }}{% if item.title|length > 50 %}...{% endif %}</td><td class="td">{{ item.content[:80] }}{% if item.content|length > 80 %}...{% endif %}</td><td class="td"><a href="{{ url_for('admin_bp.edit_challenge_item', item_id=item.id) }}" class="a-edit">Edit</a><form method="POST" action="{{ url_for('admin_bp.delete_challenge_item', item_id=item.id) }}" class="form-delete" onsubmit="return confirm('Delete item?');"><button type="submit" class="btn-delete">Delete</button></form></td></tr>
+{% else %}<tr><td colspan="4" class="td-center">No challenge items found.</td></tr>{% endfor %}</tbody></table>
+<style>.th{padding:0.75rem;text-align:left;font-size:0.875rem;font-weight:500;color:#4a5568;text-transform:uppercase;letter-spacing:0.05em;}.td{padding:0.75rem;white-space:nowrap;border-bottom:1px solid #e2e8f0;}.td-center{text-align:center;}.a-edit{color:#4f46e5;margin-right:0.75rem;}.btn-delete{color:#dc2626;}.form-delete{display:inline;}</style>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "admin/admin_base.html" %}
+{% block admin_content %}
+<h1 class="text-2xl font-bold mb-6">{{ title }}</h1>
+<form method="POST" action="{{ form_action }}" class="form-layout">
+    {{ form.hidden_tag() }}
+    {{ render_field(form.icon_emoji) }}
+    {{ render_field(form.title) }}
+    {{ render_field(form.description, rows=4) }}
+    {{ render_field(form.order, type="number") }}
+    <div class="form-actions">{{ form.submit(class="btn-submit") }} <a href="{{ url_for('admin_bp.manage_future_trends') }}" class="btn-cancel">Cancel</a></div>
+</form>
+{% from "_form_helpers.html" import render_field with context %}
+<style>.form-layout{space-y:1.5rem;background-color:white;padding:1.5rem;border-radius:0.5rem;box-shadow:0 1px 3px 0 rgba(0,0,0,0.1),0 1px 2px 0 rgba(0,0,0,0.06);}.btn-submit{padding:0.5rem 1rem;border:1px solid transparent;border-radius:0.375rem;font-size:0.875rem;font-weight:500;color:white;background-color:#4f46e5;}.btn-cancel{margin-left:0.75rem;padding:0.5rem 1rem;border:1px solid #d1d5db;border-radius:0.375rem;background-color:white;font-size:0.875rem;font-weight:500;color:#374151;}</style>
+{% endblock %}

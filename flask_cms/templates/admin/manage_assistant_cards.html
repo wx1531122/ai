@@ -1,0 +1,40 @@
+{% extends "admin/admin_base.html" %}
+{% block admin_content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">{{ title }}</h1>
+    <a href="{{ url_for('admin_bp.add_assistant_card') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add New Card</a>
+</div>
+<div class="bg-white shadow-md rounded my-6">
+    <table class="min-w-full table-auto">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description (Excerpt)</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Badge</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for card in cards %}
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap">{{ card.order }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ card.title }}</td>
+                <td class="px-6 py-4">{{ card.description[:80] }}{% if card.description|length > 80 %}...{% endif %}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ card.badge_text }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <a href="{{ url_for('admin_bp.edit_assistant_card', card_id=card.id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                    <form method="POST" action="{{ url_for('admin_bp.delete_assistant_card', card_id=card.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this card?');">
+                        <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">No chatbot cards found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
