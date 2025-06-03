@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length, Optional
 import json
+import os
 
 app = Flask(__name__)
 
@@ -12,9 +13,7 @@ if not app.config.get('SECRET_KEY') or app.config.get('SECRET_KEY') == 'your_sec
     print("WARNING: Using a default or weak SECRET_KEY. Generating a new one for this session.")
     app.config['SECRET_KEY'] = os.urandom(24).hex()
 
-# Initialize Flask-Login with the app instance
-login_manager.init_app(app)
-app.config['SECRET_KEY'] = 'your_secret_key'  # Change this in a real app
+# app.config['SECRET_KEY'] = 'your_secret_key'  # This was redundant
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' # Using SQLite for simplicity
 db = SQLAlchemy(app)
 
@@ -138,7 +137,6 @@ def create_db():
 from sqlalchemy.exc import IntegrityError # For handling cases where data might already exist if run multiple times
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-import os
 # import json # json is already imported globally at the top of app.py
 
 # ---- Initial Data Seeding Function ----
@@ -305,6 +303,7 @@ login_manager = LoginManager()
 # login_manager.init_app(app) # This will be handled by the modifier script after app is available
 login_manager.login_view = 'admin_bp.login' # Route name for the login page
 login_manager.login_message_category = 'info'
+login_manager.init_app(app) # Initialize Flask-Login with the app instance HERE
 
 # In-memory user store (for simplicity in this step)
 users = {
